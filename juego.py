@@ -27,7 +27,6 @@ class Unidad:
             pygame.draw.rect(pantalla, (255, 255, 0), (self.x, self.y, self.ancho, self.alto), 3)
         if self.destino is not None:
             pygame.draw.circle(pantalla, (255, 0, 0), self.destino, 5)
-        # barra de vida
         ancho_vida = int(self.ancho * self.vida / self.vida_maxima)
         pygame.draw.rect(pantalla, (120, 0, 0), (self.x, self.y - 10, self.ancho, 5))
         pygame.draw.rect(pantalla, (0, 200, 0), (self.x, self.y - 10, ancho_vida, 5))
@@ -66,11 +65,8 @@ class Unidad:
         return math.hypot(dx, dy) <= self.alcance
 
 azul = Unidad(100, 250, 80, 40, (40, 80, 200), "azul")
-rojo = Unidad(800, 250, 80, 40, (200, 50, 50), "rojo")    # para probar: cambia 800 por 200
+rojo = Unidad(800, 250, 80, 40, (200, 50, 50), "rojo")    
 unidades = [azul, rojo]
-
-# azul.ataque = 1    # para probar: quita el # y el azul pega más fuerte
-# rojo.ataque = 1    # para probar: quita el # y el rojo pega más fuerte
 
 fondo = pygame.image.load("Mapas/mapa1.jpg")
 fondo = pygame.transform.scale(fondo, (1000, 600))
@@ -86,7 +82,6 @@ fuente_grande = pygame.font.Font(None, 80)
 reloj = pygame.time.Clock()
 corriendo = True
 while corriendo:
-    # 1. Leer eventos
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             corriendo = False
@@ -103,7 +98,6 @@ while corriendo:
                 fase = "resolucion"
                 contador = 0
 
-    # 2. Actualizar
     if fase == "resolucion":
         for unidad in unidades:
             unidad.mover()
@@ -136,7 +130,6 @@ while corriendo:
             else:
                 ganador = "Ganan los azules"
 
-    # 3. Dibujar
     pantalla.blit(fondo, (0, 0))
     for unidad in unidades:
         unidad.dibujar(pantalla)
