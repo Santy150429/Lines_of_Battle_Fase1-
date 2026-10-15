@@ -1,74 +1,23 @@
 
-import math
+import os
 import pygame
+from unidad import Unidad
+
+def crear_ejercitos(bando, x, color, cantidad, direccion):
+    ejercito = []
+    for i in range(cantidad):
+        fila = i % 5
+        columna = i // 5
+        ejercito.append(Unidad(x + columna * 100 * direccion, 80 + fila * 90, 80, 40, color, bando))
+    return ejercito
 
 pygame.init()
 pantalla = pygame.display.set_mode((1000, 600))
 
-class Unidad:
-    def __init__(self, x, y, ancho, alto, color, bando):
-        self.x = x
-        self.y = y
-        self.ancho = ancho
-        self.alto = alto
-        self.color = color
-        self.bando = bando
-        self.velocidad = 2
-        self.seleccionada = False
-        self.destino = None
-        self.vida = 100
-        self.vida_maxima = 100
-        self.alcance = 150
-        self.ataque = 0.3
+unidades = crear_ejercitos("azul", 100, (40, 80, 200), 10, 1) + crear_ejercitos("rojo", 800, (200, 50, 50), 10, -1)
 
-    def dibujar(self, pantalla):
-        pygame.draw.rect(pantalla, self.color, (self.x, self.y, self.ancho, self.alto))
-        if self.seleccionada:
-            pygame.draw.rect(pantalla, (255, 255, 0), (self.x, self.y, self.ancho, self.alto), 3)
-        if self.destino is not None:
-            pygame.draw.circle(pantalla, (255, 0, 0), self.destino, 5)
-        ancho_vida = int(self.ancho * self.vida / self.vida_maxima)
-        pygame.draw.rect(pantalla, (120, 0, 0), (self.x, self.y - 10, self.ancho, 5))
-        pygame.draw.rect(pantalla, (0, 200, 0), (self.x, self.y - 10, ancho_vida, 5))
-
-    def mover(self):
-        if self.destino is None:
-            return
-
-        dx = self.destino[0] - self.x
-        dy = self.destino[1] - self.y
-
-        if abs(dx) <= self.velocidad:
-            self.x = self.destino[0]
-        elif dx > 0:
-            self.x += self.velocidad
-        else:
-            self.x -= self.velocidad
-
-        if abs(dy) <= self.velocidad:
-            self.y = self.destino[1]
-        elif dy > 0:
-            self.y += self.velocidad
-        else:
-            self.y -= self.velocidad
-
-        if self.x == self.destino[0] and self.y == self.destino[1]:
-            self.destino = None
-
-    def contiene(self, punto):
-        rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
-        return rect.collidepoint(punto)
-
-    def a_alcance(self, otra):
-        dx = otra.x - self.x
-        dy = otra.y - self.y
-        return math.hypot(dx, dy) <= self.alcance
-
-azul = Unidad(100, 250, 80, 40, (40, 80, 200), "azul")
-rojo = Unidad(800, 250, 80, 40, (200, 50, 50), "rojo")    
-unidades = [azul, rojo]
-
-fondo = pygame.image.load("Mapas/mapa1.jpg")
+carpeta = os.path.dirname(os.path.abspath(__file__))
+fondo = pygame.image.load(os.path.join(carpeta, "Mapas", "mapa1.jpg"))
 fondo = pygame.transform.scale(fondo, (1000, 600))
 
 fase = "ordenes"
